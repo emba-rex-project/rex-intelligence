@@ -1,6 +1,6 @@
 # Rex Intelligence Service
 
-Backend service for retrieving answers from uploaded PDF resumes using a Retrieval-Augmented Generation (RAG) pipeline built with FastAPI, OpenAI embeddings, and a persistent Chroma vector store.
+Backend service for retrieving answers from uploaded Rex PDF using a Retrieval-Augmented Generation (RAG) pipeline built with FastAPI, OpenAI embeddings, and a persistent Chroma vector store.
 
 ## Features
 - Upload one or more Rex PDF files via API; documents are stored on disk and parsed page by page.
@@ -18,3 +18,33 @@ Backend service for retrieving answers from uploaded PDF resumes using a Retriev
 - `scripts/` — Utilities like `scripts/ingest.py` for command-line ingestion.
 - `tests/` — Pytest suites covering core services and configuration.
 
+## Getting Started
+1. **Set up the environment with uv**
+   ```bash
+   uv venv
+   source .venv/bin/activate
+   uv pip install -r requirements.txt
+   ```
+   Install `requirements-dev.txt` the same way when you need test tooling: `uv pip install -r requirements-dev.txt`.
+2. **Configure environment**
+   - Copy `.env.example` to `.env` and set `OPENAI_API_KEY`, model names, and `DATA_DIR` if you want a custom path.
+3. **Launch the API**
+   ```bash
+   uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+4. **Ingest PDFs**
+   - Upload via HTTP: `POST /api/ingest/upload` with `multipart/form-data`.
+   - Or use the CLI: `uv run python scripts/ingest.py data/uploads`.
+5. **Query the knowledge base**
+   ```bash
+   curl -X POST http://localhost:8000/api/query \
+     -H "Content-Type: application/json" \
+     -d '{"query": "Which candidate won the Hology 3.0 App Innovation Competition?", "include_raw_chunks": true}'
+   ```
+
+## Testing
+Run the unit tests with:
+```bash
+uv run pytest
+```
+Add new tests under `tests/` matching the module under development.
