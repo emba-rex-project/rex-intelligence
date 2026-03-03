@@ -1,4 +1,4 @@
-# Rex Intelligence Service
+# Rex Intelligence Poc Service
 
 Backend service for retrieving answers from uploaded Rex PDF using a Retrieval-Augmented Generation (RAG) pipeline built with FastAPI, OpenAI embeddings, and a persistent Chroma vector store.
 
@@ -48,3 +48,16 @@ Run the unit tests with:
 uv run pytest
 ```
 Add new tests under `tests/` matching the module under development.
+
+## Docker
+Build and run the service in Docker:
+```bash
+docker build -t pdf-rag .
+docker run --env-file .env -p 8000:8000 -v $(pwd)/data:/app/data pdf-rag
+```
+The volume mount ensures uploads and the vector store persist across container restarts.
+
+## Notes & Limitations
+- OpenAI API key is required for embeddings and answer synthesis.
+- Chroma telemetry is enabled by default; set `CHROMA_TELEMETRY` env var to disable if needed.
+- Distances returned by Chroma are converted to similarity scores for readability; higher values indicate closer matches.
